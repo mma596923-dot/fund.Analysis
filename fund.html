@@ -1,0 +1,134 @@
+<!doctype html><html lang="kk">  <head>    <meta charset="UTF-8" />    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />    <meta name="apple-mobile-web-app-capable" content="yes" />    <title>Fundamental Analysis Quiz</title>    <style>      :root {        --bg: #030304;        --panel: rgba(9, 9, 16, 0.82);        --answer: rgba(23, 23, 29, 0.9);        --text: #f4f4f7;        --muted: #b8b8c2;        --line: rgba(255, 255, 255, 0.14);        --gold: #ffb000;        --green: #22c55e;        --red: #ef4444;      }
+
+      * { box-sizing: border-box; }
+
+      html, body { min-height: 100%; }
+
+      body {        margin: 0;        min-height: 100vh;        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;        color: var(--text);        background: #000;        overscroll-behavior: none;      }
+
+      button {        font: inherit;        touch-action: manipulation;        -webkit-tap-highlight-color: transparent;      }
+
+      .app {        position: relative;        min-height: 100vh;        min-height: 100svh;        overflow: hidden;        display: grid;        place-items: center;        padding: 14px;        background:          radial-gradient(circle at 26% 18%, rgba(255, 176, 0, 0.14), transparent 15rem),          radial-gradient(circle at 78% 70%, rgba(255, 176, 0, 0.12), transparent 18rem),          var(--bg);      }
+
+      .app::before {        content: "";        position: absolute;        inset: 0;        z-index: 0;        pointer-events: none;        background-image:          radial-gradient(circle, rgba(255, 255, 255, 0.18) 0 1px, transparent 2px),          radial-gradient(circle, rgba(255, 255, 255, 0.12) 0 1px, transparent 2px);        background-position: 10% 18%, 80% 74%;        background-size: 180px 190px, 260px 230px;      }
+
+      .floating-terms {        position: fixed;        inset: 0;        z-index: 1;        pointer-events: none;        overflow: hidden;      }
+
+      .term {        position: absolute;        color: rgba(255, 226, 0, 0.46);        font-size: clamp(13px, 4vw, 20px);        font-weight: 1000;        text-shadow: 0 0 12px rgba(255, 176, 0, 0.55);        filter: blur(0.8px);        opacity: 0.82;        white-space: nowrap;        animation: floatTerm 9s ease-in-out infinite;      }
+
+      .term:nth-child(1) { left: 4%; top: 7%; animation-delay: -1s; }      .term:nth-child(2) { left: 35%; top: 3%; animation-delay: -5s; }      .term:nth-child(3) { right: 8%; top: 6%; animation-delay: -2s; }      .term:nth-child(4) { left: 7%; top: 20%; animation-delay: -7s; }      .term:nth-child(5) { right: 7%; top: 20%; animation-delay: -3s; }      .term:nth-child(6) { left: 2%; top: 39%; animation-delay: -8s; }      .term:nth-child(7) { right: 3%; top: 41%; animation-delay: -4s; }      .term:nth-child(8) { left: 5%; bottom: 28%; animation-delay: -6s; }      .term:nth-child(9) { right: 4%; bottom: 28%; animation-delay: -9s; }      .term:nth-child(10) { left: 12%; bottom: 13%; animation-delay: -2.5s; }      .term:nth-child(11) { right: 16%; bottom: 12%; animation-delay: -6.5s; }      .term:nth-child(12) { left: 42%; bottom: 4%; animation-delay: -4.5s; }      .term:nth-child(13) { left: 20%; top: 30%; animation-delay: -1.5s; }      .term:nth-child(14) { right: 18%; top: 31%; animation-delay: -7.5s; }      .term:nth-child(15) { left: 20%; bottom: 39%; animation-delay: -3.5s; }      .term:nth-child(16) { right: 22%; bottom: 41%; animation-delay: -5.5s; }      .term:nth-child(17) { left: 36%; top: 15%; animation-delay: -8.5s; }
+
+      @keyframes floatTerm {        0% { transform: translate3d(0, 0, 0) scale(1); }        35% { transform: translate3d(10px, -14px, 0) scale(1.03); }        70% { transform: translate3d(-8px, 10px, 0) scale(0.98); }        100% { transform: translate3d(0, 0, 0) scale(1); }      }
+
+      @media (prefers-reduced-motion: reduce) {        .term { animation: none; }      }
+
+      .quiz-shell {        position: relative;        z-index: 2;        width: min(430px, 100%);        min-height: calc(100svh - 28px);        overflow: hidden;        border: 1px solid rgba(255, 255, 255, 0.13);        border-radius: 24px;        background: var(--panel);        box-shadow:          0 24px 80px rgba(0, 0, 0, 0.72),          0 0 70px rgba(255, 176, 0, 0.14);        backdrop-filter: blur(5px);      }
+
+      .main-panel {        min-height: calc(100svh - 28px);        padding: 22px 18px;        display: flex;        flex-direction: column;      }
+
+      .screen {        display: none;        min-height: 100%;        flex: 1;      }
+
+      .screen.active {        display: flex;        flex-direction: column;      }
+
+      .intro, .result {        justify-content: center;        text-align: center;      }
+
+      h1, h2 { margin: 0; }
+
+      h1 {        font-size: clamp(29px, 9vw, 38px);        line-height: 1.05;        font-weight: 1000;      }
+
+      .title-accent {        display: block;        color: var(--gold);      }
+
+      .lead {        width: min(310px, 100%);        margin: 16px auto 30px;        color: #f0f0f3;        font-size: 15px;        line-height: 1.4;      }
+
+      .toolbar {        display: flex;        gap: 12px;        flex-wrap: wrap;        justify-content: center;      }
+
+      .btn {        min-height: 56px;        width: 100%;        border: 0;        border-radius: 14px;        padding: 0 22px;        display: inline-flex;        align-items: center;        justify-content: center;        gap: 10px;        color: var(--text);        background: rgba(255, 255, 255, 0.09);        cursor: pointer;        transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;      }
+
+      .btn:active { transform: scale(0.98); }      .btn.primary { color: #090910; background: var(--gold); font-weight: 900; }
+
+      .top-row {        display: flex;        justify-content: space-between;        align-items: center;        gap: 12px;        margin-bottom: 20px;      }
+
+      .pill {        min-height: 38px;        padding: 0 14px;        border-radius: 999px;        display: inline-flex;        align-items: center;        justify-content: center;        color: var(--gold);        background: rgba(24, 24, 32, 0.82);        border: 1px solid rgba(255, 176, 0, 0.12);        font-weight: 900;        font-size: 16px;      }
+
+      .question {        min-height: 94px;        display: grid;        place-items: center;        text-align: center;        font-size: clamp(18px, 5.2vw, 22px);        line-height: 1.24;        margin: 8px 0 20px;      }
+
+      .answers {        display: grid;        gap: 12px;      }
+
+      .answer {        min-height: 66px;        width: 100%;        text-align: left;        border: 1px solid #33333f;        border-radius: 12px;        padding: 15px 16px;        color: var(--text);        background: var(--answer);        cursor: pointer;        display: flex;        align-items: center;        font-size: 16px;        line-height: 1.3;        transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, opacity 160ms ease;      }
+
+      .answer:active:not(:disabled) { transform: scale(0.99); }      .answer:disabled { cursor: default; }      .answer.correct { border-color: rgba(47, 209, 124, 0.72); background: rgba(47, 209, 124, 0.2); }      .answer.wrong { border-color: rgba(239, 68, 68, 0.78); background: rgba(239, 68, 68, 0.2); }      .answer.dimmed { opacity: 0.42; }      .letter { display: none; }
+
+      .status, .scoreboard, .progress-track, .review { display: none; }
+
+      .trophy {        width: 86px;        height: 86px;        margin: 0 auto 26px;        display: grid;        place-items: center;        color: var(--gold);      }
+
+      .result h2 {        font-size: 34px;        line-height: 1;      }
+
+      .result-score {        margin: 14px 0 8px;        color: var(--gold);        font-size: clamp(56px, 18vw, 68px);        font-weight: 1000;        line-height: 1;      }
+
+      .result-text {        color: var(--muted);        margin: 0 0 34px;        font-size: 22px;        font-weight: 900;      }
+
+      #restartBtn {        min-height: 64px;        border-radius: 12px;        color: var(--text);        background: #23232b;        font-size: 17px;      }
+
+      @media (max-width: 480px) {        .app { padding: 0; }        .term {          color: rgba(255, 226, 0, 0.76);          opacity: 0.95;          filter: blur(0.25px);          text-shadow:            0 0 10px rgba(255, 176, 0, 0.72),            0 0 22px rgba(255, 176, 0, 0.34);        }        .quiz-shell {          width: 100%;          min-height: 100svh;          border-radius: 0;          border-left: 0;          border-right: 0;          background: rgba(9, 9, 16, 0.5);          backdrop-filter: none;        }        .main-panel {          min-height: 100svh;          padding: max(18px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));        }        .pill {          background: rgba(24, 24, 32, 0.68);        }        .answer {          background: rgba(23, 23, 29, 0.78);        }        .quiz-shell::before {          content: "";          position: absolute;          inset: 0;          z-index: -1;          background:            linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.24)),            radial-gradient(circle at 50% 46%, rgba(255, 176, 0, 0.08), transparent 18rem);        }      }
+
+      @media (max-height: 700px) {        .main-panel { padding-top: 14px; padding-bottom: 14px; }        .question { min-height: 76px; margin-bottom: 14px; }        .answers { gap: 9px; }        .answer { min-height: 58px; padding-block: 12px; font-size: 15px; }        .lead { margin-bottom: 22px; }      }    </style>  </head>  <body class="home-active">    <main class="app">      <div class="floating-terms" aria-hidden="true">        <span class="term">YoY</span>        <span class="term">EBITDA</span>        <span class="term">P/E</span>        <span class="term">Risk-off</span>        <span class="term">ROE</span>        <span class="term">Risk-on</span>        <span class="term">EPS</span>        <span class="term">Cash Flow</span>        <span class="term">Revenue</span>        <span class="term">Free Cash Flow</span>        <span class="term">Market Cap</span>        <span class="term">10-K</span>        <span class="term">10-Q</span>        <span class="term">Insider</span>        <span class="term">Growth</span>        <span class="term">FCF</span>        <span class="term">Fed</span>      </div>
+
+      <section class="quiz-shell" aria-label="Fundamental Analysis Quiz">        <aside class="scoreboard">          <strong id="questionMetric">0/25</strong>          <strong id="scoreMetric">0</strong>          <strong id="accuracyMetric">0%</strong>        </aside>
+
+        <section class="main-panel">          <div id="introScreen" class="screen intro active">            <h1>Fundamental Analysis <span class="title-accent">Quiz</span></h1>            <p class="lead">Фундаменталды анализ бойынша өз біліміңізді тексеріңіз!</p>            <div class="toolbar">              <button class="btn primary" id="startBtn" type="button">СТАРТ</button>            </div>          </div>
+
+          <div id="quizScreen" class="screen">            <div class="top-row">              <div class="pill" id="counter">1 / 25</div>              <div class="pill timer" id="timer">30s</div>            </div>            <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>            <h2 class="question" id="questionText"></h2>            <div class="answers" id="answers"></div>            <div class="status" id="statusText"></div>          </div>
+
+          <div id="resultScreen" class="screen result">            <div class="trophy" aria-hidden="true">              <svg width="54" height="54" viewBox="0 0 24 24" fill="none">                <path d="M8 21H16M12 17V21M7 4H17V9.5C17 12.26 14.76 14.5 12 14.5C9.24 14.5 7 12.26 7 9.5V4Z" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />                <path d="M7 6H4V8.5C4 10.43 5.57 12 7.5 12M17 6H20V8.5C20 10.43 18.43 12 16.5 12" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" />              </svg>            </div>            <h2>Нәтиже</h2>            <div class="result-score" id="finalPercent">0%</div>            <p class="result-text" id="finalText">0 / 25 сұрақ</p>            <div class="toolbar">              <button class="btn primary" id="restartBtn" type="button">                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" aria-hidden="true">                  <path d="M3 12A9 9 0 1 0 6.64 4.75M3 4V10H9" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />                </svg>                ҚАЙТАЛАУ              </button>            </div>            <div class="review" id="reviewList"></div>          </div>        </section>      </section>    </main>
+
+    <script>      const QUESTIONS = [        { q: "Фундаменталда ең маңыздысы не іздеу?", a: ["Қысқа мерзімді баға қозғалысын талдау", "Ішкі құн мен ұзақ мерзімді өсімді бағалау", "Сауда сигналдары мен кіру нүктесін табу", "Нарық көлемі мен белсенділікті бақылау"], correct: 1 },        { q: "Free Cash Flow деген не?", a: ["Компанияның жалпы табыс көрсеткіші", "Шығыннан кейінгі еркін ақша көлемі", "Қарыз міндеттемелерінің жалпы сомасы", "Дивидендке бөлінетін ақша ағыны"], correct: 1 },        { q: "Company analysis кезінде не қаралады?", a: ["Қысқа мерзімді баға өзгерістері мен нарық динамикасын талдау", "Қаржылық есептер мен компанияның өсу мүмкіндігін бағалау", "Нарық жаңалықтары мен инвестор көңіл-күйін бақылау", "Сауда көлемі мен акция белсенділігін салыстыру"], correct: 1 },        { q: "Market capitalization қалай есептеледі?", a: ["Кіріс пен пайда көрсеткішін көбейту", "Акция бағасы мен санын көбейту", "Қарыз бен активтерді қосу", "EPS пен табысты есептеу"], correct: 1 },        { q: "EBITDA нені білдіреді?", a: ["Компанияның негізгі операциялық нәтижесін сипаттайды", "Салық пен пайызға дейінгі табыс деңгейін сипаттайды", "Барлық шығыннан кейінгі таза пайда құрылымын сипаттайды", "Активтердің жалпы нарықтық құнын сипаттайды"], correct: 1 },        { q: "Insider activity нені көрсетеді?", a: ["Компания ішкі басқару мен сенім деңгейін сипаттайды", "Баға қозғалысының қысқа мерзімді бағытын сипаттайды", "Нарық жаңалықтарының бағаға әсерін сипаттайды", "Сауда белсенділігі мен көлем динамикасын сипаттайды"], correct: 0 },        { q: "ROE нені көрсетеді?", a: ["Баға қозғалысын көрсетеді", "Капитал тиімділігін көрсетеді", "Қарыз деңгейін көрсетеді", "Нарық белсенділігін көрсетеді"], correct: 1 },        { q: "Overvalued акция деген не?", a: ["Нарықта төмен бағаланған акция", "Нарық бағасы ішкі құнынан жоғары акция", "Қаржылық көрсеткіші әлсіз компания акциясы", "Дивиденд төлемейтін тұрақсыз акция"], correct: 1 },        { q: "Undervalued акция деген не?", a: ["Жоғары бағаланған акция", "Төмен бағаланған акция", "Дивидендсіз акция", "Қарызы жоғары акция"], correct: 1 },        { q: "Макроэкономикалық факторлар қалай әсер етеді?", a: ["Қысқа мерзімді бағаға әсер етеді", "Табыс пен ұзақ өсімге әсер етеді", "Тек жаңалық әсерін күшейтеді", "Тек сауда көлеміне әсер етеді"], correct: 1 },        { q: "Small-cap компания ерекшелігі қандай?", a: ["Баға қозғалысы баяу әрі тұрақты болып келеді", "Волатильдігі мен тәуекел деңгейі жоғары болады", "Дивиденд төлеу тұрақтылығы жоғары болып келеді", "Нарықтағы өтімділік деңгейі төмен болып келеді"], correct: 1 },        { q: "Growth company деген не?", a: ["Төмен табысты тұрақсыз компания", "Жылдам өсіп жатқан компания", "Бағасы төмен компания", "Қарызы жоқ компания"], correct: 1 },        { q: "Insider buying нені білдіреді?", a: ["Инвесторлардың акцияларды жаппай сату процесі", "Компания басшыларының акция сатып алуы", "Акция бағасының төмендеу процесінің басталуы", "Компания ішіндегі құрылымдық өзгерістер жоспары"], correct: 1 },        { q: "Hype акция деген не?", a: ["Тұрақты қаржылық компания акциясы", "Эмоция мен жаңалықпен өсетін акция", "Дивидендке бағытталған акция", "Қарызсыз компания акциясы"], correct: 1 },        { q: "EPS деген не?", a: ["Компанияның жалпы кіріс көлемінің көрсеткіші", "Бір акцияға шаққандағы таза пайда мөлшері", "Компанияның жалпы қарыз деңгейі", "Активтер құрылымының жалпы сипаты"], correct: 1 },        { q: "Фундаменталда ойлау қалай?", a: ["Эмоцияға сүйену", "Логикаға сүйену", "Жаңалыққа сүйену", "Графикке сүйену"], correct: 1 },        { q: "Federal Reserve қандай рөл атқарады?", a: ["Компанияларды басқаруды жүзеге асырады", "Ақша-несие саясатын реттейді", "Акция бағасын бақылайды", "Нарықты толық басқарады"], correct: 1 },        { q: "Interest rate өссе не болады?", a: ["Акциялар көбіне өсім бағытын жалғастырады", "Акциялар көбіне төмендеу бағытына өтеді", "Нарықтағы қозғалыс айтарлықтай өзгермейді", "Дивиденд мөлшері автоматты түрде ұлғаяды"], correct: 1 },        { q: "Cash Flow Statement не үшін керек?", a: ["Компанияның жалпы табысын бағалау үшін", "Нақты ақша қозғалысын бақылау үшін", "Қаржылық есептерді салыстыру үшін", "Инвестициялық шешім қабылдау үшін"], correct: 1 },        { q: "Revenue деген не?", a: ["Таза пайданы білдіреді", "Жалпы кірісті білдіреді", "Қарыз сомасын білдіреді", "Активтер жиынын білдіреді"], correct: 1 },        { q: "Risk-on нені білдіреді?", a: ["Инвесторлар қауіптен қашып, қорғаныс активтерін таңдайды", "Инвесторлар тәуекелден бас тартады", "Инвесторлар жоғары табыс үшін тәуекелге барады", "Нарық толық тұрақсыз күйге өтеді"], correct: 2 },        { q: "Risk-off нені білдіреді?", a: ["Инвесторлар тәуекелді активтерге көбірек ақша салады", "Инвесторлар қорғаныс активтеріне асығады", "Нарықтағы баға тұрақты өседі", "Сауда көлемі күрт артады"], correct: 1 },        { q: "YoY деген не?", a: ["Айлық өзгеріс қарқынын көрсетеді", "Апталық өзгеріс қарқынын көрсетеді", "Жылдық өзгеріс қарқынын көрсетеді", "Күнделікті өзгеріс қарқынын көрсетеді"], correct: 2 },        { q: "P/E көрсеткіші нені білдіреді?", a: ["Қарыз бен капитал арақатынасын сипаттайды", "Баға мен пайда қатынасын сипаттайды", "Дивиденд пен табыс деңгейін сипаттайды", "Активтер тиімділігі мен құнын сипаттайды"], correct: 1 },        { q: "10-K және 10-Q деген не?", a: ["Компания акцияларының нарықтағы бағасын көрсететін есеп", "Жылдық және тоқсандық қаржылық есептер", "Тек салық төлеуге арналған есеп түрі", "Инвестициялық портфельді басқару құжаты"], correct: 1 }      ];
+
+      const byId = (id) => document.getElementById(id);      const letters = ["A", "B", "C", "D"];      const state = { order: [], correctSlots: [], current: 0, score: 0, selected: null, locked: false, timerId: null, timeLeft: 30, history: [] };
+
+      function playSound(type) {        try {          const AudioContext = window.AudioContext || window.webkitAudioContext;          if (!AudioContext) return;          const ctx = new AudioContext();          const osc = ctx.createOscillator();          const gain = ctx.createGain();          const settings = { click: [620, 0.05, 0.08], correct: [880, 0.09, 0.18], wrong: [190, 0.08, 0.2] }[type];          if (!settings) return;          osc.connect(gain);          gain.connect(ctx.destination);          osc.frequency.value = settings[0];          gain.gain.setValueAtTime(settings[1], ctx.currentTime);          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + settings[2]);          osc.start();          osc.stop(ctx.currentTime + settings[2]);        } catch (error) {          return;        }      }
+
+      function shuffle(items) {        const copy = [...items];        for (let i = copy.length - 1; i > 0; i -= 1) {          const j = Math.floor(Math.random() * (i + 1));          [copy[i], copy[j]] = [copy[j], copy[i]];        }        return copy;      }
+
+      function buildCorrectSlots(total) {        const slots = [];        let previous = -1;
+
+        while (slots.length < total) {          const group = shuffle([0, 1, 2, 3]);          if (group[0] === previous) {            [group[0], group[1]] = [group[1], group[0]];          }
+
+          group.forEach((slot) => {            if (slots.length < total) {              slots.push(slot);              previous = slot;            }          });        }
+
+        return slots;      }
+
+      function buildAnswerOrder(question, correctVisibleIndex) {        const correctOption = { text: question.a[question.correct], index: question.correct };        const wrongOptions = shuffle(question.a          .map((text, index) => ({ text, index }))          .filter((option) => option.index !== question.correct));
+
+        const answerOrder = [];        for (let index = 0; index < question.a.length; index += 1) {          answerOrder[index] = index === correctVisibleIndex ? correctOption : wrongOptions.shift();        }
+
+        return answerOrder;      }
+
+      function showScreen(id) {        document.querySelectorAll(".screen").forEach((screen) => screen.classList.remove("active"));        byId(id).classList.add("active");        document.body.classList.toggle("home-active", id === "introScreen");      }
+
+      function updateMetrics() {        const answered = state.history.length;        const accuracy = answered ? Math.round((state.score / answered) * 100) : 0;        byId("questionMetric").textContent = `${Math.min(state.current + 1, QUESTIONS.length)}/${QUESTIONS.length}`;        byId("scoreMetric").textContent = state.score;        byId("accuracyMetric").textContent = `${accuracy}%`;      }
+
+      function startGame() {        clearInterval(state.timerId);        state.order = shuffle(QUESTIONS.map((_, index) => index));        state.correctSlots = buildCorrectSlots(QUESTIONS.length);        state.current = 0;        state.score = 0;        state.selected = null;        state.locked = false;        state.history = [];        state.timeLeft = 30;        showScreen("quizScreen");        renderQuestion();      }
+
+      function renderQuestion() {        const question = QUESTIONS[state.order[state.current]];        state.locked = false;        state.selected = null;        state.timeLeft = 30;        byId("statusText").textContent = "";        byId("counter").textContent = `${state.current + 1} / ${QUESTIONS.length}`;        byId("timer").textContent = "30s";        byId("progressBar").style.width = `${(state.current / QUESTIONS.length) * 100}%`;        byId("questionText").textContent = question.q;        const answerOrder = buildAnswerOrder(question, state.correctSlots[state.current]);        const answers = byId("answers");        answers.innerHTML = "";
+
+        answerOrder.forEach((option, visibleIndex) => {          const button = document.createElement("button");          button.className = "answer";          button.type = "button";          button.dataset.originalIndex = option.index;          button.innerHTML = `<span class="letter">${letters[visibleIndex]}</span><span>${option.text}</span>`;          button.addEventListener("click", () => chooseAnswer(button, option.index));          answers.appendChild(button);        });
+
+        updateMetrics();        startTimer();      }
+
+      function returnHome() {        clearInterval(state.timerId);        state.correctSlots = [];        state.current = 0;        state.score = 0;        state.selected = null;        state.locked = false;        state.timeLeft = 30;        state.history = [];        updateMetrics();        showScreen("introScreen");      }
+
+      function startTimer() {        clearInterval(state.timerId);        state.timerId = setInterval(() => {          state.timeLeft -= 1;          byId("timer").textContent = `${state.timeLeft}s`;          if (state.timeLeft <= 0) chooseAnswer(null, -1);        }, 1000);      }
+
+      function chooseAnswer(button, selectedIndex) {        if (state.locked) return;        state.locked = true;        clearInterval(state.timerId);        const question = QUESTIONS[state.order[state.current]];        const isCorrect = selectedIndex === question.correct;        if (isCorrect) {          state.score += 1;          playSound("correct");        } else {          playSound("wrong");        }        state.history.push({ question: question.q, correctAnswer: question.a[question.correct], isCorrect });
+
+        document.querySelectorAll(".answer").forEach((answer) => {          answer.disabled = true;          const originalIndex = Number(answer.dataset.originalIndex);          if (originalIndex === question.correct) answer.classList.add("correct");          else if (originalIndex === selectedIndex) answer.classList.add("wrong");          else answer.classList.add("dimmed");        });
+
+        byId("progressBar").style.width = `${((state.current + 1) / QUESTIONS.length) * 100}%`;        updateMetrics();        setTimeout(() => {          state.current += 1;          if (state.current < QUESTIONS.length) renderQuestion();          else finishGame();        }, 1300);      }
+
+      function finishGame() {        clearInterval(state.timerId);        const percent = Math.round((state.score / QUESTIONS.length) * 100);        byId("finalPercent").textContent = `${percent}%`;        byId("finalText").textContent = `${state.score} / ${QUESTIONS.length} сұрақ`;        byId("questionMetric").textContent = `${QUESTIONS.length}/${QUESTIONS.length}`;        byId("scoreMetric").textContent = state.score;        byId("accuracyMetric").textContent = `${percent}%`;        renderReview();        showScreen("resultScreen");      }
+
+      function renderReview() {        const list = byId("reviewList");        list.innerHTML = "";        state.history.forEach((item, index) => {          const row = document.createElement("div");          row.className = "review-row";          row.innerHTML = `<span><strong>${index + 1}.</strong> ${item.correctAnswer}</span><strong>${item.isCorrect ? "✓" : "×"}</strong>`;          list.appendChild(row);        });      }
+
+      byId("startBtn").addEventListener("click", startGame);      byId("restartBtn").addEventListener("click", returnHome);      updateMetrics();    </script>  </body></html>
+
